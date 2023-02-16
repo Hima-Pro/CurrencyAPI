@@ -7,17 +7,18 @@ var scraper = (qData, callback) =>{
   var gSearch = "https://google.com/search";
   var gQuery;
   if (qData[2] > 1) {
-    gQuery = `${qData[2]}+${qData[0]}+to+${qData[1]}`;
+    gQuery = `${qData[2]}+${qData[0]}+vs+${qData[1]}`;
   } else {
-    gQuery = `${qData[0]}+to+${qData[1]}`;
+    gQuery = `${qData[0]}+vs+${qData[1]}`;
   }
-  request({ qs: {q: gQuery}, uri: gSearch }, function (error, response, body) {
+  request({ qs: {q: gQuery, hl:"en"}, uri: gSearch }, function (error, response, body) {
     if (!error && response.statusCode == 200 && body) {
       const { document } = new JSDOM(body).window;
       var elText = document.querySelector("div > .BNeawe").textContent;
+      console.log(elText)
       var result = elText.split(" ")[0];
-          result = result.replace(".", "");
-          result = result.replace(",", ".");
+          //result = result.replace(".", "");
+          result = result.replace(",", "");
           result = parseFloat(result);
       callback({
         "status": 200,
@@ -32,12 +33,7 @@ router.route('/').get(function (req, res) {
   res.json({
     "status": 404,
     "result": {
-      "try": "/EGP+vs+RUB?amount=10&apikey=###",
-      "accept":[
-        'https://hima-pro.github.io',
-        'https://currency.tdim.me',
-        'https://tdim.me'
-      ]
+      "try": "/EGP/RUB?amount=10"
     }
   });
 });
